@@ -1,0 +1,38 @@
+<resources>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="good">
+        <item name="android:textColor">@color/materialYellow</item>
+    </style>
+
+    <style name="datePicker" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/materialLilDarkGray</item>
+        <item name="android:background">@color/materialLilDarkGray</item>
+        <item name="colorAccent">@color/materialDarkGray</item>
+        <item name="android:textColor">@color/materialYellow</item>
+    </style>
+
+    <style name="timePicker" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorControlActivated">@color/materialDarkGray</item>
+        <item name="android:background">@color/materialLilDarkGray</item>
+        <item name="colorAccent">@color/materialLilDarkGray</item>
+        <item name="android:textColorPrimary">@color/materialBlack</item>
+        <item name="android:textColorSecondary">@color/materialDarkGray</item>
+        <item name="android:textColor">@color/materialYellow</item>
+    </style>
+
+    <style name="textDialog" parent="android:Theme.DeviceDefault.Dialog.Alert">
+        <item name="colorAccent">@color/materialYellow</item>
+        <item name="android:textColorPrimary">@color/materialBlack</item>
+        <item name="android:background">@color/materialLilDarkGray</item>
+        <item name="android:buttonStyle">@style/good</item>
+        <item name="android:textSize">18sp</item>
+
+    </style>
+
+</resources>

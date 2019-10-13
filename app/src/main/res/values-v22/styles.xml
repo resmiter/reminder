@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="textDialog" parent="android:Theme.DeviceDefault.Dialog.Alert">
+        <item name="colorAccent">@color/materialYellow</item>
+        <item name="android:textColorPrimary">@color/materialBlack</item>
+        <item name="android:background">@color/materialLilDarkGray</item>
+        <item name="android:buttonStyle">@style/good</item>
+        <item name="android:textSize">18sp</item>
+
+    </style>
+</resources>
