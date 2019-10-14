@@ -1,11 +1,16 @@
 package com.example.reminder;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.example.reminder.dataBase.DBHelper;
+import com.example.reminder.dataBase.ReminderItems;
 import com.example.reminder.dialogs.TextDialog;
 import com.example.reminder.helper.RecyclerItemTouchHelper;
 import com.example.reminder.helper.RecyclerItemTouchHelperListener;
@@ -46,16 +51,18 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, RecyclerItemTouchHelperListener {
 
-    private DrawerLayout drawer;
-    private Reminder reminder;
-    private TextDialog textDialog;
     private final List<Item> items = new ArrayList<>();
-    private final ItemAdapter itemAdapter= new ItemAdapter(this.items);
+    private ItemAdapter itemAdapter;
+    private Reminder reminder;
     private TextView emptyData;
+    private TextDialog textDialog;
+    private DrawerLayout drawer;
     private RecyclerView recyclerView;
+    private SQLiteDatabase mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,16 +71,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         emptyData = findViewById(R.id.empty);
-        recyclerView = findViewById(R.id.recyclerActual);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(itemAdapter);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        isListEmpty();
 
+        DBHelper dbHelper = new DBHelper(this);
+        mDatabase = dbHelper.getWritableDatabase();
+
+        recyclerView = findViewById(R.id.recyclerActual);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        itemAdapter = new ItemAdapter(this, getAllItems());
+        recyclerView.setAdapter(itemAdapter);
+//        recyclerView.setHasFixedSize(true);
+//        recyclerView.setItemAnimator(new DefaultItemAnimator());
+//        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+//        isListEmpty();
+
+
+        //fab button
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        //navigation bar
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -97,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
 
 
+        //swipe
         ItemTouchHelper.SimpleCallback itemTouchHelperCallBack
                 = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
         new ItemTouchHelper(itemTouchHelperCallBack).attachToRecyclerView(recyclerView);
@@ -105,13 +121,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void add(Reminder reminder) {
         this.items.add(new Item(reminder.getText(), reminder.getDate()));
         itemAdapter.notifyItemInserted(this.items.size() - 1);
+
+        ContentValues cv = new ContentValues();
+        cv.put(ReminderItems.ItemEntry.COLUMN_NAME, reminder.getText());
+        cv.put(ReminderItems.ItemEntry.COLUMN_TIME, format(reminder.getDate()));
+
+        mDatabase.insert(ReminderItems.ItemEntry.TABLE_NAME, null, cv);
+        itemAdapter.swapCursor(getAllItems());
+    }
+
+    private String format(Date date) {
+        return String.format(
+                Locale.getDefault(), "%02d.%02d.%d  %d:%d",
+                date.getSeconds(), date.getMonth(), date.getYear(), date.getHours(), date.getMinutes()
+        );
+    }
+
+    private Cursor getAllItems() {
+        return mDatabase.query(
+                ReminderItems.ItemEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                ReminderItems.ItemEntry.COLUMN_TIMESTAMP + " DESC"
+        );
     }
 
     public void isListEmpty() {
-        if(items.isEmpty()){
+        if (items.isEmpty()) {
             recyclerView.setVisibility(View.GONE);
             emptyData.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             emptyData.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
         }
@@ -145,29 +187,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Handler h = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Toast.makeText(MainActivity.this, "Уведомление создано" , Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "Уведомление создано", Toast.LENGTH_SHORT).show();
             reminder.setText(reminder.getText());
             add(reminder);
-            isListEmpty();
+//            isListEmpty();
         }
     };
 
-    @Override
-    public void onSwipe(RecyclerView.ViewHolder viewHolder, int direction, int position) {
-        if (viewHolder instanceof ItemAdapter.MyViewHolder) {
-            final Item deletedItem = items.get(viewHolder.getAdapterPosition());
-            final int deletedIndex = viewHolder.getAdapterPosition();
+    public void removeItem(long id) {
+        mDatabase.delete(ReminderItems.ItemEntry.TABLE_NAME, ReminderItems.ItemEntry._ID + "=" + id, null);
+        itemAdapter.swapCursor(getAllItems());
+    }
+    public void restoreItem(long id, String name, String time, String timeStamp) {
 
-            itemAdapter.removeItem(deletedIndex);
-            itemAdapter.notifyDataSetChanged();
+        ContentValues cv = new ContentValues();
+        cv.put(ReminderItems.ItemEntry.COLUMN_NAME, name);
+        cv.put(ReminderItems.ItemEntry.COLUMN_TIME, time);
+        cv.put(ReminderItems.ItemEntry.COLUMN_TIMESTAMP, timeStamp);
+
+        mDatabase.insert(ReminderItems.ItemEntry.TABLE_NAME, null, cv);
+        itemAdapter.swapCursor(getAllItems());
+    }
+
+    @Override
+    public void onSwipe(final RecyclerView.ViewHolder viewHolder, int direction, final int position) {
+        if (viewHolder instanceof ItemAdapter.ItemViewHolder) {
+            final String name = ((ItemAdapter.ItemViewHolder) viewHolder).nameItem.getText().toString();
+            final String time = ((ItemAdapter.ItemViewHolder) viewHolder).timeItem.getText().toString();
+            final long id = (long) viewHolder.itemView.getTag();
+            final String timeStamp = ((ItemAdapter.ItemViewHolder) viewHolder).getTimeStamp();
+
+            removeItem(id);
 
             Snackbar snackbar = Snackbar.make(drawer, "Удалено", Snackbar.LENGTH_LONG);
             snackbar.setAction("Отмена", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    itemAdapter.restoreItem(deletedItem, deletedIndex);
-                    itemAdapter.notifyDataSetChanged();
-
+                    restoreItem(id, name, time, timeStamp);
                 }
             });
             snackbar.setActionTextColor(Color.RED);

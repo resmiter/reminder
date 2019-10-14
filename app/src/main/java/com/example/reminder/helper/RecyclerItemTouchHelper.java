@@ -32,7 +32,7 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-        View foregroundView = ((ItemAdapter.MyViewHolder)viewHolder).viewForeground;
+        View foregroundView = ((ItemAdapter.ItemViewHolder)viewHolder).viewForeground;
         getDefaultUIUtil().clearView(foregroundView);
     }
 
@@ -44,20 +44,20 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     @Override
     public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
         if (viewHolder != null) {
-            View foregroundView = ((ItemAdapter.MyViewHolder)viewHolder).viewForeground;
+            View foregroundView = ((ItemAdapter.ItemViewHolder)viewHolder).viewForeground;
             getDefaultUIUtil().onSelected(foregroundView);
         }
     }
 
     @Override
     public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        View foregroundView = ((ItemAdapter.MyViewHolder)viewHolder).viewForeground;
+        View foregroundView = ((ItemAdapter.ItemViewHolder)viewHolder).viewForeground;
         getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
     }
 
     @Override
     public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        View foregroundView = ((ItemAdapter.MyViewHolder)viewHolder).viewForeground;
+        View foregroundView = ((ItemAdapter.ItemViewHolder)viewHolder).viewForeground;
         getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.reminder.listItems;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,73 +13,84 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.reminder.R;
+import com.example.reminder.dataBase.ReminderItems;
 import com.example.reminder.struct.Item;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class ItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private final List<Item> items;
-    private Context context;
+public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
+    private Context mContext;
+    private Cursor mCursor;
 
-    public ItemAdapter(List<Item> items) {
-        this.items = items;
+
+    public ItemAdapter(Context context, Cursor cursor) {
+        this.mContext = context;
+        this.mCursor = cursor;
     }
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.items_actual, parent, false);
-        return new MyViewHolder(itemView);
+    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View itemView = inflater.inflate(R.layout.items_actual, parent, false);
+        return new ItemViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        TextView name = holder.itemView.findViewById(R.id.nameItemActual);
-        TextView time = holder.itemView.findViewById(R.id.timeItemActual);
-        Item item = this.items.get(position);
-        name.setText(this.items.get(position).getName());
-        time.setText(format(item.getDate()));
+    public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
+        if (!mCursor.moveToPosition(position)){
+                return;
+        }
 
-    }
+        String name = mCursor.getString(mCursor.getColumnIndex(ReminderItems.ItemEntry.COLUMN_NAME));
+        String time = mCursor.getString(mCursor.getColumnIndex(ReminderItems.ItemEntry.COLUMN_TIME));
+        String timeStamp = mCursor.getString(mCursor.getColumnIndex(ReminderItems.ItemEntry.COLUMN_TIMESTAMP));
+        long id = mCursor.getLong(mCursor.getColumnIndex(ReminderItems.ItemEntry._ID));
 
-    private String format(Date date) {
-        return String.format(
-                Locale.getDefault(), "%02d.%02d.%d  %d:%d",
-                date.getSeconds(), date.getMonth(), date.getYear(), date.getHours(), date.getMinutes()
-        );
+        holder.nameItem.setText(name);
+        holder.timeItem.setText(time);
+        holder.itemView.setTag(id);
+        holder.timeStamp = timeStamp;
     }
 
     @Override
     public int getItemCount() {
-        return this.items.size();
+        return mCursor.getCount();
     }
 
-    public void removeItem(int position) {
-        items.remove(position);
-        notifyItemRemoved(position);
+    public void swapCursor (Cursor newCursor) {
+        if (mCursor != null) {
+            mCursor.close();
+        }
+
+        mCursor = newCursor;
+
+        if (newCursor != null) {
+            notifyDataSetChanged();
+        }
     }
 
-    public void restoreItem(Item item, int position) {
-        items.add(position, item);
-        notifyItemInserted(position);
-    }
+    public class ItemViewHolder extends RecyclerView.ViewHolder{
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
-
-        public TextView name;
-        public TextView date;
+        public TextView nameItem;
+        public TextView timeItem;
         public RelativeLayout viewBackground;
         public RelativeLayout viewForeground;
+        public String timeStamp;
 
-        public MyViewHolder(@NonNull View itemView) {
+        public ItemViewHolder(View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.nameItemActual);
-            date = itemView.findViewById(R.id.timeItemActual);
+            nameItem = itemView.findViewById(R.id.nameItemActual);
+            timeItem = itemView.findViewById(R.id.timeItemActual);
             viewBackground = itemView.findViewById(R.id.view_background);
             viewForeground = itemView.findViewById(R.id.view_foreground);
         }
+
+        public String getTimeStamp() {
+            return timeStamp;
+        }
+
     }
 }
