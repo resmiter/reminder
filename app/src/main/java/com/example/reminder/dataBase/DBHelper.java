@@ -8,8 +8,8 @@ import com.example.reminder.dataBase.ReminderItems.ItemEntry;
 import androidx.annotation.Nullable;
 
 public class DBHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "itemList.db";
-    public static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "itemList.db";
+    private static final int DATABASE_VERSION = 1;
 
     public DBHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

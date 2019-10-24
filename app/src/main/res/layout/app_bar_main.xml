@@ -16,7 +16,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/materialBlack" />
+            android:background="@color/colorAccent" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:backgroundTint="@color/materialLilDarkGray"
+        android:backgroundTint="@color/shade"
         app:srcCompat="@drawable/add" />
 
 

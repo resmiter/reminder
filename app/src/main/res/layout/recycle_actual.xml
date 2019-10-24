@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/materialDarkGray"
+    android:background="@color/colorPrimaryDark"
     android:orientation="vertical">
 
     <Space
@@ -20,7 +20,7 @@
         android:id="@+id/recyclerActual"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/materialDarkGray"
+        android:background="@color/colorPrimaryDark"
         android:clickable="false"
         android:layout_margin="8dp"/>
 

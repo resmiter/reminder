@@ -1,11 +1,12 @@
-package com.example.reminder.listItems;
+package com.example.reminder.adapters;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -14,21 +15,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.reminder.R;
 import com.example.reminder.dataBase.ReminderItems;
-import com.example.reminder.struct.Item;
 
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
+
     private Context mContext;
     private Cursor mCursor;
+    private SQLiteDatabase mDatabase;
 
-
-    public ItemAdapter(Context context, Cursor cursor) {
+    public ItemAdapter(Context context, SQLiteDatabase mDatabase) {
         this.mContext = context;
-        this.mCursor = cursor;
+        this.mDatabase = mDatabase;
+        this.mCursor = getAllItems();
     }
 
     @NonNull
@@ -48,7 +48,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         String name = mCursor.getString(mCursor.getColumnIndex(ReminderItems.ItemEntry.COLUMN_NAME));
         String time = mCursor.getString(mCursor.getColumnIndex(ReminderItems.ItemEntry.COLUMN_TIME));
         String timeStamp = mCursor.getString(mCursor.getColumnIndex(ReminderItems.ItemEntry.COLUMN_TIMESTAMP));
-//        String idNotif = mCursor.getString(mCursor.getColumnIndex(ReminderItems.ItemEntry._ID));
         long id = mCursor.getLong(mCursor.getColumnIndex(ReminderItems.ItemEntry._ID));
         long timeNotification = Long.parseLong(mCursor.getString(mCursor.getColumnIndex(ReminderItems.ItemEntry.COLUMN_TIME_NOTIFICATION)));
 
@@ -77,6 +76,34 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         }
     }
 
+    public Cursor getAllItems() {
+        return mDatabase.query(
+                ReminderItems.ItemEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                ReminderItems.ItemEntry.COLUMN_TIMESTAMP + " DESC"
+        );
+    }
+
+    public void removeItem(long id) {
+        mDatabase.delete(ReminderItems.ItemEntry.TABLE_NAME, ReminderItems.ItemEntry._ID + "=" + id, null);
+        swapCursor(getAllItems());
+    }
+
+    public void restoreItem(Calendar c, String name, String time, String timeStamp) {
+        ContentValues cv = new ContentValues();
+        cv.put(ReminderItems.ItemEntry.COLUMN_NAME, name);
+        cv.put(ReminderItems.ItemEntry.COLUMN_TIME, time);
+        cv.put(ReminderItems.ItemEntry.COLUMN_TIMESTAMP, timeStamp);
+        cv.put(ReminderItems.ItemEntry.COLUMN_TIME_NOTIFICATION, c.getTime().getTime());
+
+        mDatabase.insert(ReminderItems.ItemEntry.TABLE_NAME, null, cv);
+        swapCursor(getAllItems());
+    }
+
     public class ItemViewHolder extends RecyclerView.ViewHolder{
 
         public TextView nameItem;
@@ -87,16 +114,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         public long id;
         public long timeNotification;
 
-        public ItemViewHolder(View itemView) {
+        ItemViewHolder(View itemView) {
             super(itemView);
             nameItem = itemView.findViewById(R.id.nameItemActual);
             timeItem = itemView.findViewById(R.id.timeItemActual);
             viewBackground = itemView.findViewById(R.id.view_background);
             viewForeground = itemView.findViewById(R.id.view_foreground);
         }
-
-//        public long getId() {
-//            return id;
-//        }
     }
 }

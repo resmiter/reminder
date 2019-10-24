@@ -1,4 +1,4 @@
-package com.example.reminder.helper;
+package com.example.reminder.touchHelper;
 
 import android.graphics.Canvas;
 import android.view.View;
@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.reminder.listItems.ItemAdapter;
+import com.example.reminder.adapters.ItemAdapter;
 
 public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
 

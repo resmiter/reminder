@@ -40,7 +40,6 @@ public class TimeDialog extends DialogFragment {
         }
     };
 
-    //то, что показанно при создании диалога
     public Dialog onCreateDialog(Bundle bundle){
         TimePickerDialog tpd = new TimePickerDialog(getActivity(), R.style.timePicker,
                 callback, currentDate.getHours(), currentDate.getMinutes(), true);

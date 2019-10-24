@@ -1,4 +1,4 @@
-package com.example.reminder.helper;
+package com.example.reminder.touchHelper;
 
 import androidx.recyclerview.widget.RecyclerView;
 
