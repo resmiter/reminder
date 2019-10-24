@@ -1,18 +1,14 @@
 package com.example.reminder.dialogs;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.DatePicker;
-import android.widget.Toast;
 
-import com.example.reminder.MainActivity;
 import com.example.reminder.R;
 import com.example.reminder.struct.Reminder;
 
@@ -37,8 +33,8 @@ public class DateDialog extends DialogFragment {
             Bundle data = new Bundle();
             data.putString("btn", "Selected date - day: " + day + "  mouth: " + (mouth + 1) + "  year: " + year);
             msg.setData(data);
-            reminder.getDate().setSeconds(day);
-            reminder.getDate().setMonth(mouth + 1);
+            reminder.getDate().setDate(day);
+            reminder.getDate().setMonth(mouth);
             reminder.getDate().setYear(year);
             h.sendMessage(msg);
         }

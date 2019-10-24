@@ -7,11 +7,13 @@ public class Reminder {
     private Date date;
     private String text;
     private Boolean lifeOfReminder;
+    private long id;
 
-    public Reminder (Date date, String text, Boolean lifeOfReminder){
+    public Reminder (Date date, String text, Boolean lifeOfReminder, long id){
         this.date = date;
         this.text = text;
         this.lifeOfReminder = lifeOfReminder;
+        this.id = id;
     }
 
     public Reminder (){
@@ -42,5 +44,13 @@ public class Reminder {
 
     public void setLifeOfReminder(Boolean lifeOfReminder) {
         this.lifeOfReminder = lifeOfReminder;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

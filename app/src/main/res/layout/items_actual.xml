@@ -3,13 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    >
 
     <RelativeLayout
         android:id="@+id/view_background"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@color/materialRed">
+        android:background="@drawable/delete_bg"
+        >
 
         <ImageView
             android:id="@+id/delete_icon"
@@ -24,7 +27,7 @@
             android:id="@+id/view_foreground"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:background="@color/materialLilDarkGray"
+            android:background="@drawable/card_bg"
             android:padding="10dp">
 
             <ImageView
@@ -41,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/app_name"
-                android:textColor="@color/materialBlack"
+                android:textColor="#000000"
                 android:textSize="25sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -55,7 +58,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/cancel"
-                android:textColor="@color/materialBlack"
+                android:textColor="#000000"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/nameItemActual" />

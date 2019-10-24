@@ -10,6 +10,7 @@ public class ReminderItems {
         public static final String TABLE_NAME =  "itemsActualList";
         public static final String COLUMN_NAME =  "name";
         public static final String COLUMN_TIME =  "time";
+        public static final String COLUMN_TIME_NOTIFICATION =  "timeNotification";
         public static final String COLUMN_TIMESTAMP =  "timestamp";
     }
 }

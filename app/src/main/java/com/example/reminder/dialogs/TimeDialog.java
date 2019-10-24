@@ -35,6 +35,7 @@ public class TimeDialog extends DialogFragment {
             msg.setData(data);
             reminder.getDate().setHours(hourOfDay);
             reminder.getDate().setMinutes(minute);
+            reminder.getDate().setSeconds(0);
             new DateDialog(h, reminder).show(getFragmentManager(), "dateDialog");
         }
     };

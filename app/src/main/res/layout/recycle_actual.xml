@@ -22,7 +22,7 @@
         android:layout_height="match_parent"
         android:background="@color/materialDarkGray"
         android:clickable="false"
-        android:layout_margin="16dp"/>
+        android:layout_margin="8dp"/>
 
 
 

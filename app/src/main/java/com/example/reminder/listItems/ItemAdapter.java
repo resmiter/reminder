@@ -16,6 +16,7 @@ import com.example.reminder.R;
 import com.example.reminder.dataBase.ReminderItems;
 import com.example.reminder.struct.Item;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -47,12 +48,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         String name = mCursor.getString(mCursor.getColumnIndex(ReminderItems.ItemEntry.COLUMN_NAME));
         String time = mCursor.getString(mCursor.getColumnIndex(ReminderItems.ItemEntry.COLUMN_TIME));
         String timeStamp = mCursor.getString(mCursor.getColumnIndex(ReminderItems.ItemEntry.COLUMN_TIMESTAMP));
+//        String idNotif = mCursor.getString(mCursor.getColumnIndex(ReminderItems.ItemEntry._ID));
         long id = mCursor.getLong(mCursor.getColumnIndex(ReminderItems.ItemEntry._ID));
+        long timeNotification = Long.parseLong(mCursor.getString(mCursor.getColumnIndex(ReminderItems.ItemEntry.COLUMN_TIME_NOTIFICATION)));
 
         holder.nameItem.setText(name);
         holder.timeItem.setText(time);
         holder.itemView.setTag(id);
         holder.timeStamp = timeStamp;
+        holder.timeNotification = timeNotification;
+        holder.id = id;
     }
 
     @Override
@@ -79,6 +84,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         public RelativeLayout viewBackground;
         public RelativeLayout viewForeground;
         public String timeStamp;
+        public long id;
+        public long timeNotification;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
@@ -88,9 +95,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             viewForeground = itemView.findViewById(R.id.view_foreground);
         }
 
-        public String getTimeStamp() {
-            return timeStamp;
-        }
-
+//        public long getId() {
+//            return id;
+//        }
     }
 }

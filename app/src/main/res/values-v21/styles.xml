@@ -7,32 +7,23 @@
     </style>
 
     <style name="good">
-        <item name="android:textColor">@color/materialYellow</item>
+        <item name="android:textColor">@color/materialLilDarkGray</item>
     </style>
 
     <style name="datePicker" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorPrimary">@color/materialLilDarkGray</item>
-        <item name="android:background">@color/materialLilDarkGray</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:background">@color/colorPrimary</item>
         <item name="colorAccent">@color/materialDarkGray</item>
-        <item name="android:textColor">@color/materialYellow</item>
+        <item name="android:textColor">@color/materialLilDarkGray</item>
     </style>
 
     <style name="timePicker" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorControlActivated">@color/materialDarkGray</item>
-        <item name="android:background">@color/materialLilDarkGray</item>
-        <item name="colorAccent">@color/materialLilDarkGray</item>
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:textColorPrimary">@color/materialBlack</item>
         <item name="android:textColorSecondary">@color/materialDarkGray</item>
-        <item name="android:textColor">@color/materialYellow</item>
-    </style>
-
-    <style name="textDialog" parent="android:Theme.DeviceDefault.Dialog.Alert">
-        <item name="colorAccent">@color/materialYellow</item>
-        <item name="android:textColorPrimary">@color/materialBlack</item>
-        <item name="android:background">@color/materialLilDarkGray</item>
-        <item name="android:buttonStyle">@style/good</item>
-        <item name="android:textSize">18sp</item>
-
+        <item name="android:textColor">@color/materialLilDarkGray</item>
     </style>
 
 </resources>

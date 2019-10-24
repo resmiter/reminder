@@ -8,7 +8,7 @@ import com.example.reminder.dataBase.ReminderItems.ItemEntry;
 import androidx.annotation.Nullable;
 
 public class DBHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "itemActualList.db";
+    public static final String DATABASE_NAME = "itemList.db";
     public static final int DATABASE_VERSION = 1;
 
     public DBHelper(@Nullable Context context) {
@@ -22,6 +22,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 ItemEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 ItemEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 ItemEntry.COLUMN_TIME + " TEXT NOT NULL, " +
+                ItemEntry.COLUMN_TIME_NOTIFICATION + " TEXT NOT NULL, " +
                 ItemEntry.COLUMN_TIMESTAMP + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
                 ");";
         db.execSQL(SQL_CREATE_ITEMSACTUALLIST_TABLE);
