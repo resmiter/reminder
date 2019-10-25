@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDatabase.insert(ReminderItems.ItemEntry.TABLE_NAME, null, cv);
         itemAdapter.swapCursor(itemAdapter.getAllItems());
 
-        notificationHelper.toastNotification(c, reminder);
+        notificationHelper.toastNotification(c, reminder, drawer);
         notificationHelper.createNotification(c, reminder.getText(), timeMills, this);
     }
 

@@ -9,12 +9,13 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.os.Build;
-import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.reminder.R;
 import com.example.reminder.struct.Reminder;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Calendar;
 
@@ -71,7 +72,7 @@ public class NotificationHelper extends ContextWrapper {
         alarmManager.cancel(pendingIntent);
     }
 
-    public void toastNotification(Calendar c, Reminder reminder) {
+    public void toastNotification(Calendar c, Reminder reminder, DrawerLayout drawer) {
 
         Calendar calendar = Calendar.getInstance();
         long mouthInSec = 2419200;
@@ -107,15 +108,15 @@ public class NotificationHelper extends ContextWrapper {
                 minute = reminder.getDate().getMinutes() - calendar.get(Calendar.MINUTE);
             }
 
-            String result = "Оталось - ";
+            String result = "До напоминания ";
             if (hour < 0) hour += 24;
-            if (day != 0) result += "дней: " + day + ", ";
-            if (hour != 0) result += "часов: " + hour + ", ";
-            if (minute != 0) result += "минут: " + minute + ", ";
+            if (day != 0) result += "дней: " + day + ",  ";
+            if (hour != 0) result += "часов: " + hour + ",  ";
+            if (minute != 0) result += "минут: " + minute + ",  ";
             result += "!";
-            result = result.replace(", !", ".");
-
-            Toast.makeText(this, result, Toast.LENGTH_LONG).show();
+            result = result.replace(",  !", "");
+            Snackbar snackbar = Snackbar.make(drawer, result, Snackbar.LENGTH_LONG);
+            snackbar.show();
         }
     }
 }
