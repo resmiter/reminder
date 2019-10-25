@@ -107,11 +107,13 @@ public class NotificationHelper extends ContextWrapper {
                 minute = reminder.getDate().getMinutes() - calendar.get(Calendar.MINUTE);
             }
 
-            String result = "Осталось   ";
+            String result = "Оталось - ";
             if (hour < 0) hour += 24;
-            if (day != 0) result += "дней: " + day;
-            if (hour != 0) result += "  часов: " + hour;
-            if (minute != 0) result += "  минут: " + minute;
+            if (day != 0) result += "дней: " + day + ", ";
+            if (hour != 0) result += "часов: " + hour + ", ";
+            if (minute != 0) result += "минут: " + minute + ", ";
+            result += "!";
+            result = result.replace(", !", ".");
 
             Toast.makeText(this, result, Toast.LENGTH_LONG).show();
         }
