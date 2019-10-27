@@ -5,7 +5,8 @@
     <color name="colorPrimary">#78909C</color>
     <color name="colorPrimaryDark">#37474F</color>
     <color name="colorAccent">#263238</color>
-    <color name="materialRed">#EA3732</color>
+    <color name="materialRed">#E44336</color>
+    <color name="materialYellow">#FFD740</color>
     <color name="colorItem">#CFD8DC</color>
 </resources>
 

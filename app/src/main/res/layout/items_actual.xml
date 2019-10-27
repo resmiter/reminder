@@ -1,69 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
-    >
+    android:orientation="vertical">
+
 
     <RelativeLayout
-        android:id="@+id/view_background"
+        android:id="@+id/view_foreground"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@drawable/delete_bg"
-        >
+        android:background="@drawable/card_bg"
+        android:padding="10dp">
 
         <ImageView
-            android:id="@+id/delete_icon"
+            android:id="@+id/pen"
             android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_height="300dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/delite" />
+            android:layout_marginRight="20dp"
+            android:src="@drawable/task" />
 
-        <RelativeLayout
-            android:id="@+id/view_foreground"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:background="@drawable/card_bg"
-            android:padding="10dp">
+        <TextView
+            android:id="@+id/nameItemActual"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="8dp"
+            android:text="@string/app_name"
+            android:textColor="#000000"
+            android:textSize="25sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/pen"
-                android:layout_width="30dp"
-                android:layout_height="300dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
-                android:src="@drawable/pen" />
-
-            <TextView
-                android:id="@+id/nameItemActual"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:textColor="#000000"
-                android:textSize="25sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/timeItemActual"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/nameItemActual"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:text="@string/cancel"
-                android:textColor="#000000"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/nameItemActual" />
-        </RelativeLayout>
-
+        <TextView
+            android:id="@+id/timeItemActual"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/nameItemActual"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/cancel"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nameItemActual" />
     </RelativeLayout>
+
 
 </FrameLayout>

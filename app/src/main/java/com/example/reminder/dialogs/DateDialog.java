@@ -12,16 +12,13 @@ import android.widget.DatePicker;
 import com.example.reminder.R;
 import com.example.reminder.struct.Reminder;
 
-import java.util.Calendar;
-
 @SuppressLint("ValidFragment")
 public class DateDialog extends DialogFragment {
     Handler h;
     Reminder reminder;
-    Calendar calendar = Calendar.getInstance();
 
     public DateDialog(Handler arg_h, Reminder reminder){
-        h = arg_h;
+        this.h = arg_h;
         this.reminder = reminder;
     }
 
@@ -36,13 +33,18 @@ public class DateDialog extends DialogFragment {
             reminder.getDate().setDate(day);
             reminder.getDate().setMonth(mouth);
             reminder.getDate().setYear(year);
+            if (reminder.isSwipe()){
+            reminder.getItemAdapter().removeItem(reminder.getId());
+            reminder.getNotificationHelper().cancelNotification(reminder.getId(), reminder.getContext());
+            reminder.setSwipe(false);
+            }
             h.sendMessage(msg);
         }
     };
 
     public Dialog onCreateDialog(Bundle bundle){
         DatePickerDialog dpd = new DatePickerDialog(getActivity(), R.style.datePicker,
-                callback, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+                callback, reminder.getDate().getYear(), reminder.getDate().getMonth(), reminder.getDate().getDate());
         return dpd;
     }
 }

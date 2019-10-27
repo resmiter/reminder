@@ -13,8 +13,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         NotificationHelper notificationHelper = new NotificationHelper(context);
         NotificationCompat.Builder nb = notificationHelper.getChannelNotification();
-        nb.setContentTitle(intent.getStringExtra("reminder"));
+        nb.setContentTitle(intent.getStringExtra("reminder")).setAutoCancel(true);
         notificationHelper.getManager().notify(1, nb.build());
-
     }
 }

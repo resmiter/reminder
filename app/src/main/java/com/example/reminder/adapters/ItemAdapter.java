@@ -93,12 +93,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         swapCursor(getAllItems());
     }
 
-    public void restoreItem(Calendar c, String name, String time, String timeStamp) {
+    public void restoreItem(Calendar c, String name, String time, String timeStamp, long id) {
         ContentValues cv = new ContentValues();
         cv.put(ReminderItems.ItemEntry.COLUMN_NAME, name);
         cv.put(ReminderItems.ItemEntry.COLUMN_TIME, time);
         cv.put(ReminderItems.ItemEntry.COLUMN_TIMESTAMP, timeStamp);
         cv.put(ReminderItems.ItemEntry.COLUMN_TIME_NOTIFICATION, c.getTime().getTime());
+        cv.put(ReminderItems.ItemEntry._ID, id);
 
         mDatabase.insert(ReminderItems.ItemEntry.TABLE_NAME, null, cv);
         swapCursor(getAllItems());
@@ -108,7 +109,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
         public TextView nameItem;
         public TextView timeItem;
-        public RelativeLayout viewBackground;
         public RelativeLayout viewForeground;
         public String timeStamp;
         public long id;
@@ -118,7 +118,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             super(itemView);
             nameItem = itemView.findViewById(R.id.nameItemActual);
             timeItem = itemView.findViewById(R.id.timeItemActual);
-            viewBackground = itemView.findViewById(R.id.view_background);
             viewForeground = itemView.findViewById(R.id.view_foreground);
         }
     }

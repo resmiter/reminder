@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private ItemAdapter itemAdapter;
     private Reminder reminder;
     private TextView emptyData;
-    private TextDialog textDialog;
     private DrawerLayout drawer;
     private RecyclerView recyclerView;
     private SQLiteDatabase mDatabase;
@@ -83,11 +82,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                reminder = new Reminder(new Date(), "");
-                textDialog = new TextDialog();
-                textDialog.setHandler(h);
-                textDialog.setReminder(reminder);
-                textDialog.show(getFragmentManager(), "textDialog");
+                Calendar calendar = Calendar.getInstance();
+                Date date = new Date();
+                date.setTime(System.currentTimeMillis());
+                date.setYear(calendar.get(Calendar.YEAR));
+                date.setMonth(calendar.get(Calendar.MONTH));
+                date.setDate(calendar.get(Calendar.DAY_OF_MONTH));
+                openDialogs(new Reminder(date, "", MainActivity.this));
             }
         });
 
@@ -102,19 +103,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //swipe item
         ItemTouchHelper.SimpleCallback itemTouchHelperCallBack
-                = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+                = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this, MainActivity.this);
         new ItemTouchHelper(itemTouchHelperCallBack).attachToRecyclerView(recyclerView);
+
     }
 
     @SuppressLint("HandlerLeak")
     Handler h = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            reminder.setText(reminder.getText());
             add(reminder);
             isListEmpty();
         }
     };
+
+    private void openDialogs(Reminder reminder) {
+        this.reminder = reminder;
+        TextDialog textDialog = new TextDialog();
+        textDialog.setHandler(h);
+        textDialog.setReminder(reminder);
+        textDialog.show(getFragmentManager(), "textDialog");
+    }
 
     private void isListEmpty() {
         if (itemAdapter.getAllItems().getCount() == 0) {
@@ -129,6 +138,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void add(Reminder reminder) {
         long timeMills = System.currentTimeMillis();
         ContentValues cv = new ContentValues();
+        reminder.setId(timeMills);
+        itemAdapter.removeItem(timeMills);
 
         Calendar c = Calendar.getInstance();
         c.set(reminder.getDate().getYear(),
@@ -139,20 +150,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 0);
 
         if ((c.getTime().getTime() - System.currentTimeMillis()) <= (long) 0) {
-            Toast.makeText(this, "Выбранное время уже прошло!", Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(this, "Выбранное время уже прошло!\nПопробуйте еще раз", Toast.LENGTH_SHORT).show();
+            openDialogs(reminder);
+        } else {
+            cv.put(ReminderItems.ItemEntry.COLUMN_NAME, reminder.getText());
+            cv.put(ReminderItems.ItemEntry.COLUMN_TIME, reminder.format());
+            cv.put(ReminderItems.ItemEntry._ID, timeMills);
+            cv.put(ReminderItems.ItemEntry.COLUMN_TIME_NOTIFICATION, c.getTimeInMillis());
+
+            mDatabase.insert(ReminderItems.ItemEntry.TABLE_NAME, null, cv);
+            itemAdapter.swapCursor(itemAdapter.getAllItems());
+
+
+            notificationHelper.toastNotification(c, reminder, drawer);
+            notificationHelper.createNotification(c, reminder.getText(), timeMills, context);
         }
-
-        cv.put(ReminderItems.ItemEntry.COLUMN_NAME, reminder.getText());
-        cv.put(ReminderItems.ItemEntry.COLUMN_TIME, reminder.format());
-        cv.put(ReminderItems.ItemEntry._ID, timeMills);
-        cv.put(ReminderItems.ItemEntry.COLUMN_TIME_NOTIFICATION, c.getTimeInMillis());
-
-        mDatabase.insert(ReminderItems.ItemEntry.TABLE_NAME, null, cv);
-        itemAdapter.swapCursor(itemAdapter.getAllItems());
-
-        notificationHelper.toastNotification(c, reminder, drawer);
-        notificationHelper.createNotification(c, reminder.getText(), timeMills, this);
     }
 
     @Override
@@ -179,24 +191,45 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             final long id = (long) viewHolder.itemView.getTag();
             final long timeNotification = ((ItemAdapter.ItemViewHolder) viewHolder).timeNotification;
             final String timeStamp = ((ItemAdapter.ItemViewHolder) viewHolder).timeStamp;
+            final Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(timeNotification);
 
-            itemAdapter.removeItem(id);
-            notificationHelper.cancelNotification(id, context);
+            switch (direction) {
+                case ItemTouchHelper.LEFT:
+                    itemAdapter.removeItem(id);
+                    notificationHelper.cancelNotification(id, context);
 
-            Snackbar snackbar = Snackbar.make(drawer, "Удалено", Snackbar.LENGTH_LONG);
-            snackbar.setAction("Отмена", new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Calendar c = Calendar.getInstance();
-                    c.setTimeInMillis(timeNotification);
-                    itemAdapter.restoreItem(c, name, time, timeStamp);
-                    notificationHelper.createNotification(c, name, id, context);
+                    Snackbar snackbar = Snackbar.make(drawer, "Удалено", Snackbar.LENGTH_LONG);
+                    snackbar.setAction("Отмена", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            itemAdapter.restoreItem(c, name, time, timeStamp, id);
+                            notificationHelper.createNotification(c, name, id, context);
+                            isListEmpty();
+                        }
+                    });
+                    snackbar.setActionTextColor(Color.RED);
+                    snackbar.show();
+
                     isListEmpty();
-                }
-            });
-            snackbar.setActionTextColor(Color.RED);
-            snackbar.show();
-            isListEmpty();
+                    break;
+                case ItemTouchHelper.RIGHT:
+                    Date date = new Date();
+                    date.setTime(c.getTimeInMillis());
+                    date.setYear(c.get(Calendar.YEAR));
+                    date.setMonth(c.get(Calendar.MONTH));
+                    date.setDate(c.get(Calendar.DAY_OF_MONTH));
+
+                    Reminder reminder = new Reminder(date, name, MainActivity.this);
+                    reminder.setItemAdapter(itemAdapter);
+                    reminder.setNotificationHelper(notificationHelper);
+                    reminder.setSwipe(true);
+                    reminder.setId(id);
+                    itemAdapter.restoreItem(c, name, time, timeStamp, id);
+                    openDialogs(reminder);
+                    isListEmpty();
+                    break;
+            }
         }
     }
 }

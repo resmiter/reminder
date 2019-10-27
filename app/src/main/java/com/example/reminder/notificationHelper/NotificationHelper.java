@@ -13,6 +13,7 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.reminder.MainActivity;
 import com.example.reminder.R;
 import com.example.reminder.struct.Reminder;
 import com.google.android.material.snackbar.Snackbar;
@@ -36,7 +37,6 @@ public class NotificationHelper extends ContextWrapper {
     @TargetApi(Build.VERSION_CODES.O)
     private void createChannel() {
         NotificationChannel channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH);
-
         getManager().createNotificationChannel(channel);
     }
 
@@ -50,15 +50,14 @@ public class NotificationHelper extends ContextWrapper {
     public NotificationCompat.Builder getChannelNotification() {
         return new NotificationCompat.Builder(getApplicationContext(), channelID)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setSmallIcon(R.drawable.add);
+                .setSmallIcon(R.drawable.task);
     }
 
     public void createNotification(Calendar c, String name, long id, Context context) {
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(MainActivity.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("reminder", name);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) id, intent, 0);
-
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, (int) id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         if (c.before(Calendar.getInstance())) {
             c.add(Calendar.DATE, 1);
         }
@@ -67,7 +66,8 @@ public class NotificationHelper extends ContextWrapper {
 
     public void cancelNotification(long id, Context context) {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmReceiver.class);
+        AlarmReceiver alarmReceiver = new AlarmReceiver();
+        Intent intent = new Intent(context, alarmReceiver.getClass());
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) id, intent, 0);
         alarmManager.cancel(pendingIntent);
     }

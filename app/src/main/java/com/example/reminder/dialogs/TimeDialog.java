@@ -24,6 +24,7 @@ public class TimeDialog extends DialogFragment {
     public TimeDialog(Handler arg_h, Reminder reminder){
         this.h = arg_h;
         this.reminder = reminder;
+        currentDate.setTime(reminder.getDate().getTime());
     }
 
     private TimePickerDialog.OnTimeSetListener callback = new TimePickerDialog.OnTimeSetListener() {

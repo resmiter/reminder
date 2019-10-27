@@ -1,22 +1,26 @@
 package com.example.reminder.touchHelper;
 
+import android.content.Context;
 import android.graphics.Canvas;
-import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.reminder.adapters.ItemAdapter;
+import com.example.reminder.R;
 
-public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
+
+public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback{
 
     private RecyclerItemTouchHelperListener listener;
+    private Context context;
 
-    public RecyclerItemTouchHelper(int dragDirs, int swipeDirs, RecyclerItemTouchHelperListener listener) {
+    public RecyclerItemTouchHelper(int dragDirs, int swipeDirs, RecyclerItemTouchHelperListener listener, Context context) {
         super(dragDirs, swipeDirs);
         this.listener = listener;
+        this.context = context;
     }
 
     @Override
@@ -31,33 +35,19 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     }
 
     @Override
-    public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-        View foregroundView = ((ItemAdapter.ItemViewHolder)viewHolder).viewForeground;
-        getDefaultUIUtil().clearView(foregroundView);
-    }
-
-    @Override
     public int convertToAbsoluteDirection(int flags, int layoutDirection) {
         return super.convertToAbsoluteDirection(flags, layoutDirection);
     }
 
     @Override
-    public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
-        if (viewHolder != null) {
-            View foregroundView = ((ItemAdapter.ItemViewHolder)viewHolder).viewForeground;
-            getDefaultUIUtil().onSelected(foregroundView);
-        }
-    }
-
-    @Override
     public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        View foregroundView = ((ItemAdapter.ItemViewHolder)viewHolder).viewForeground;
-        getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
-    }
-
-    @Override
-    public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        View foregroundView = ((ItemAdapter.ItemViewHolder)viewHolder).viewForeground;
-        getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
+        new RecyclerViewSwipeDecorator.Builder(context, c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                .addSwipeLeftActionIcon(R.drawable.delite)
+                .addSwipeRightActionIcon(R.drawable.pen)
+                .addSwipeLeftBackgroundColor(ContextCompat.getColor(context, R.color.materialRed))
+                .addSwipeRightBackgroundColor(ContextCompat.getColor(context, R.color.materialYellow))
+                .create()
+                .decorate();
+        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
     }
 }
