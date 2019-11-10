@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -27,8 +29,12 @@ public class TextDialog extends DialogFragment implements OnClickListener {
         alert.setPositiveButton(R.string.next, this);
         alert.setNegativeButton(R.string.cancel, this);
         input = new EditText(getActivity());
+        input.setText(reminder.getText());
         alert.setView(input);
-        input.requestFocus();
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        InputFilter[] FilterArray = new InputFilter[1];
+        FilterArray[0] = new InputFilter.LengthFilter(20);
+        input.setFilters(FilterArray);
         //открывает клавиатуру, при открытии клавиатуры
         imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         input.postDelayed(new Runnable()

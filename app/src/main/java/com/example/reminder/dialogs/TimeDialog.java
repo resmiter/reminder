@@ -24,6 +24,7 @@ public class TimeDialog extends DialogFragment {
     public TimeDialog(Handler arg_h, Reminder reminder){
         this.h = arg_h;
         this.reminder = reminder;
+        currentDate.setTime(reminder.getDate().getTime());
     }
 
     private TimePickerDialog.OnTimeSetListener callback = new TimePickerDialog.OnTimeSetListener() {
@@ -35,11 +36,11 @@ public class TimeDialog extends DialogFragment {
             msg.setData(data);
             reminder.getDate().setHours(hourOfDay);
             reminder.getDate().setMinutes(minute);
+            reminder.getDate().setSeconds(0);
             new DateDialog(h, reminder).show(getFragmentManager(), "dateDialog");
         }
     };
 
-    //то, что показанно при создании диалога
     public Dialog onCreateDialog(Bundle bundle){
         TimePickerDialog tpd = new TimePickerDialog(getActivity(), R.style.timePicker,
                 callback, currentDate.getHours(), currentDate.getMinutes(), true);

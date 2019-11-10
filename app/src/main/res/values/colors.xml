@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FAAD13</color>
-    <color name="colorPrimaryDark">#314754</color>
-    <color name="colorAccent">#102125</color>
-    <color name="materialYellow">#FAAD13</color>
-    <color name="materialDarkGray">#314754</color>
-    <color name="materialLilDarkGray">#5D869E</color>
-    <color name="materialBlack">#102125</color>
-    <color name="materialRed">#EA3732</color>
+    <color name="shade">#64FFDA</color>
+    <color name="accentShade">#A7FFEB</color>
+    <color name="colorPrimary">#78909C</color>
+    <color name="colorPrimaryDark">#37474F</color>
+    <color name="colorAccent">#263238</color>
+    <color name="materialRed">#E44336</color>
+    <color name="materialYellow">#FFD740</color>
+    <color name="colorItem">#CFD8DC</color>
 </resources>
+
+
+
+
+
